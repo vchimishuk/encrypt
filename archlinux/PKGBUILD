@@ -1,0 +1,25 @@
+# Maintainer: Viacheslav Chimishuk <vchimishuk@yandex.ru>
+
+pkgname=encrypt
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="Encrypt or decrypt file using OpenSSL."
+arch=('any')
+url="https://github.com/vchimishuk/encrypt"
+license=('GPL3')
+depends=('openssl')
+makedepends=('git')
+source=("git://github.com/vchimishuk/encrypt")
+md5sums=('SKIP')
+
+prepare() {
+    cd "${srcdir}/${pkgname}"
+    git checkout -q "v${pkgver}"
+}
+
+package() {
+    cd "${srcdir}/${pkgname}"
+
+    install -d "${pkgdir}/usr/bin"
+    install -m 755 "src/encrypt" "${pkgdir}/usr/bin"
+}
