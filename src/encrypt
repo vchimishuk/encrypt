@@ -1,0 +1,126 @@
+#!/bin/sh
+
+# Encrypt and decrypt file using openssl.
+# Copyright (c) 2017  Viacheslav Chumushuk <vchimishuk@yandex.ru>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+PROGNAME=$(basename $0)
+PROGVER=0.0.1
+
+error() {
+    echo "$PROGNAME: $@"
+    exit 1
+}
+
+version() {
+    echo "$PROGNAME $PROGVER"
+    exit 0
+}
+
+help() {
+    echo "Usage: $PROGNAME [OPTION]... INPUT_FILE [OUTPUT_FILE]"
+    echo "Encrypt and decrypt file using OpenSSL."
+    echo
+    echo "If OUTPUT_FILE is not specified it fill be constructed from "
+    echo "INPUT_FILE by adding .aes suffix in encrypt mode and truncating "
+    echo "it if decrypt mode is active."
+    echo
+    echo "Options"
+    echo "  -d    decrypt INPUT_FILE"
+    echo "  -h    display this help and exit"
+    echo "  -p    specify password to use for encryption/decryption"
+    echo "  -v    display version information and exit"
+    exit 1
+}
+
+DECRYPT=0
+SHOWVER=0
+SHOWHELP=0
+INPUT=
+OUTPUT=
+PASS=
+
+while getopts "dhp:v" OPT
+do
+    case $OPT in
+        d)
+            DECRYPT=1
+            ;;
+        h)
+            SHOWHELP=1
+            ;;
+        p)
+            PASS=$OPTARG
+            ;;
+        v)
+            SHOWVER=1
+    esac
+done
+
+if [ $SHOWVER -ne 0 ]
+then
+    version
+fi
+
+if [ $SHOWHELP -ne 0 ]
+then
+    help
+fi
+
+if [ $OPTIND -le $#  ]
+then
+    INPUT=${@:$OPTIND:1}
+else
+    error "missing file operand"
+fi
+
+if [ $(($OPTIND + 1)) -eq $# ]
+then
+    OUTPUT=${@:$(($OPTIND + 1)):1}
+fi
+
+if [ $(($OPTIND + 1)) -lt $# ]
+then
+    error "two many arguments"
+fi
+
+if [ -z $OUTPUT ]
+then
+    if [ $DECRYPT -eq 0 ]
+    then
+        OUTPUT="$INPUT.aes"
+    else
+        echo $INPUT | grep -q '\.aes$'
+        if [ $? -eq 0 ]
+        then
+            OUTPUT=$(echo $INPUT | rev | cut -c 5- | rev)
+        else
+            error 'unable to generate OUTPUT filename automatically'
+        fi
+    fi
+fi
+
+CMD="openssl aes-128-cbc -salt -in $INPUT -out $OUTPUT"
+
+if [ $DECRYPT -ne 0 ]
+then
+    CMD="$CMD -d"
+fi
+if [ $PASS ]
+then
+    CMD="$CMD -k $PASS"
+fi
+
+eval $CMD
