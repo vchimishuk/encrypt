@@ -1,7 +1,7 @@
 # Maintainer: Viacheslav Chimishuk <vchimishuk@yandex.ru>
 
 pkgname=encrypt
-pkgver=0.0.1
+pkgver=0.0.2
 pkgrel=1
 pkgdesc="Encrypt or decrypt file using OpenSSL."
 arch=('any')
@@ -22,4 +22,7 @@ package() {
 
     install -d "${pkgdir}/usr/bin"
     install -m 755 "src/encrypt" "${pkgdir}/usr/bin"
+    install -d "${pkgdir}/usr/share/man/man1"
+    install -m 0644 "man/encrypt.1" "${pkgdir}/usr/share/man/man1"
+    gzip "${pkgdir}/usr/share/man/man1/encrypt.1"
 }
