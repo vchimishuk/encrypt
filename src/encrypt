@@ -38,7 +38,7 @@ help() {
     echo "it if decrypt mode is active."
     echo
     echo "Options"
-    echo "  -d    decrypt INPUT_FILE"
+    echo "  -d    enable decrypt mode"
     echo "  -h    display this help and exit"
     echo "  -p    specify password to use for encryption/decryption"
     echo "  -v    display version information and exit"

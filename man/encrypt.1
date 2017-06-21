@@ -1,0 +1,47 @@
+.PU
+.TH ENCRYPT 1
+.SH NAME
+ENCRYPT \- OpenSSL wrapper for easy file encryption and decryption
+.SH SYNOPSIS
+.LL +8
+.B encrypt
+[
+.B -h
+|
+.B -v
+]
+.br
+.B encrypt
+[
+.B -d
+] [
+.B -p "PASSWORD"
+]
+.I INPUT_FILE
+[
+.I OUTPUT_FILE
+]
+.SH DESCRIPTION
+.B Encrypt
+encrypts and decrypts file using OpenSSL. If OUTPUT_FILE is not specified it
+fill be constructed from INPUT_FILE by adding .aes suffix in encrypt mode and
+truncating it if decrypt mode is active.
+.SH OPTIONS
+.TP
+.B \-d
+enable decrypt mode
+.TP
+.B \-h
+display help screen and exit
+.TP
+.B \-p PASSWORD
+specify password to use for encryption/decryption
+.TP
+.B \-v
+print version information and exit
+.SH AUTHOR
+Viacheslav Chimishuk <vchimishuk@yandex.ru>
+.SH COPYRIGHT
+Copyright © Viacheslav Chimishuk.  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
